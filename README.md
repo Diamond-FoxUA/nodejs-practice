@@ -1,1 +1,1 @@
-# nodejs-practice
+# nodejs-practice (students)
