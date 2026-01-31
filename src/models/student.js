@@ -37,4 +37,6 @@ const studentSchema = mongoose.Schema({
   }
 );
 
+studentSchema.index({ name: "text" });
+
 export const Student = mongoose.model("Student", studentSchema);

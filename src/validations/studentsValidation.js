@@ -6,6 +6,9 @@ export const getAllStudentsSchema = {
   [Segments.QUERY]: Joi.object({
     page: Joi.number().integer().min(1),
     perPage: Joi.number().integer().min(5).max(15),
+    minAge: Joi.number().integer().positive(),
+    skills: Joi.string().valid(...SKILLS_ENUM),
+    searchText: Joi.string().trim().allow(""),
   }),
 };
 
@@ -35,7 +38,7 @@ export const studentParamIdSchema = {
 };
 
 export const updateStudentSchema = {
-  // ...studentParamIdSchema,
+// ...studentParamIdSchema,
   [Segments.PARAMS]: Joi.object({
       studentId: Joi.string().custom(objectIdValidator).required(),
     }),

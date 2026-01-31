@@ -2,9 +2,46 @@ import { Student } from "../models/student.js";
 import createHttpError from "http-errors";
 
 export const getAllStudents = async (req, res) => {
-  const students = await Student.find();
+  const { page = 1, perPage = 5, minAge, skills, searchText } = req.query;
+  const skip = (page - 1) * perPage;
 
-  res.status(200).json(students);
+  // but requires params
+  // const studentsQuery = Student.find().where('age').gte(minAge);
+
+  // const studentsQuery = Student.find({
+  //   age: { $gte: minAge},
+  //   skills: { $eq: skills }
+  // });
+
+  const studentsQuery = Student.find();
+  if (minAge) {
+    studentsQuery.where("age").gte(minAge);
+  }
+  if (skills) {
+    studentsQuery.where("skills").eq(skills);
+  }
+  if (searchText) {
+    // select on frontend ["HTML", "CSS", "JavaScript"], for skills
+    // studentsQuery.where({ $text: {$search: searchText} });
+
+    // live input search || service – Atlas search, etc; redex for pet projects
+    studentsQuery.where({ name: { $regex: searchText, $options: 'i' } });
+  }
+
+  const [totalItems, students] = await Promise.all([
+    studentsQuery.clone().countDocuments(),
+    studentsQuery.skip(skip).limit(perPage),
+  ]);
+
+  const totalPages = Math.ceil(totalItems / perPage);
+
+  res.status(200).json({
+    page,
+    perPage,
+    totalItems,
+    totalPages,
+    students
+  });
 };
 
 export const getStudentById = async (req, res) => {
