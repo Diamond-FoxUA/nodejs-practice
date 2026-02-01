@@ -2,9 +2,12 @@ import { Router } from "express";
 import { createStudent, deleteStudent, getAllStudents, getStudentById, updateStudent } from "../controllers/studentsController.js";
 import { celebrate } from "celebrate";
 import { getAllStudentsSchema, createStudentSchema, studentParamIdSchema, updateStudentSchema } from "../validations/studentsValidation.js";
+import { authenticate } from "../middleware/authenticate.js";
 
 
 const router = Router();
+
+router.use('/students', authenticate);
 
 router.get('/students',celebrate(getAllStudentsSchema), getAllStudents);
 router.get('/students/:studentId', celebrate(studentParamIdSchema), getStudentById);

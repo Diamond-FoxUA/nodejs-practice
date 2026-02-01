@@ -30,6 +30,11 @@ const studentSchema = mongoose.Schema({
   isActive: {
     type: Boolean,
     default: false
+  },
+  userId: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "User",
+    required: true
   }
 },
   {
